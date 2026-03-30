@@ -1,0 +1,14 @@
+{
+  "name": "mediqueue",
+  "version": "1.0.0",
+  "description": "MediQueue - Hospital Queue Management System for Kenya",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../app && npm install",
+    "seed": "cd backend && npm run seed",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd app && npm run dev",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd app && npm run dev"
+  },
+  "private": true
+}
