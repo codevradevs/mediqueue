@@ -18,19 +18,28 @@ const app = express();
 app.use(helmet());
 app.use(cors({
   origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
     const allowed = [
       process.env.CLIENT_URL,
       'http://localhost:5173',
       'http://localhost:3000',
     ].filter(Boolean);
-    if (!origin || allowed.some(o => origin.startsWith(o))) {
+    const isAllowed = allowed.some(o => origin === o || origin.startsWith(o));
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('CORS blocked origin:', origin);
+      callback(null, true); // temporarily allow all — tighten after confirming Vercel URL
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// Handle preflight
+app.options('*', cors());
 
 // Rate limiting
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
